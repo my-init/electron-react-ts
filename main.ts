@@ -1,4 +1,5 @@
 const electron = require('electron');
+const ipcMain = electron.ipcMain;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
@@ -6,9 +7,14 @@ const path = require('path');
 const isDev = require('electron-is-dev');
 
 let mainWindow;
-
+ipcMain.on('greeting', (event, payload) => {
+  console.log('[ipcMain] get a msg: ', payload);
+  event.reply('response', 'roger~');
+})
 function createWindow() {
-  mainWindow = new BrowserWindow({ width: 900, height: 680 });
+  mainWindow = new BrowserWindow({ width: 900, height: 680, webPreferences: {
+    nodeIntegration: true
+  } });
   mainWindow.loadURL(
     isDev
       ? 'http://localhost:3000'

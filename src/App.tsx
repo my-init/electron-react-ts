@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
+import { ipcRenderer, IpcMessageEvent } from 'electron';
 import './App.css';
 
 const App: React.FC = () => {
@@ -10,14 +11,15 @@ const App: React.FC = () => {
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <button onClick={()=>{
+          ipcRenderer.on('response', (event: IpcMessageEvent, payload: any) => {
+            console.log('[ipcRenderer] get a msg: ', payload);
+            new Notification('receive a msg from ipcMain', {
+              body: payload
+            });
+          });
+          ipcRenderer.send('greeting', 'hello~ electron');
+        }}>click to send msg to ipcMain</button>
       </header>
     </div>
   );
